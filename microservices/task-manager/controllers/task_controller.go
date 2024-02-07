@@ -10,17 +10,26 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"slices"
+	"sync"
+)
+
+const (
+	taskId = "taskId"
 )
 
 type TaskController struct {
-	taskService domain.TaskService
+	taskService    domain.TaskService
+	storageService domain.StorageService
 }
 
 func NewTaskController(
 	taskService domain.TaskService,
+	storageService domain.StorageService,
 ) *TaskController {
 	return &TaskController{
-		taskService: taskService,
+		taskService:    taskService,
+		storageService: storageService,
 	}
 }
 
@@ -45,6 +54,19 @@ func (t *TaskController) CreateNewTask(c *gin.Context) {
 }
 
 func (t *TaskController) UploadTaskImages(c *gin.Context) {
+	taskId := c.Param(taskId)
+
+	if taskId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "no task id specified"})
+		return
+	}
+
+	task, err := t.taskService.GetTask(taskId)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "task not found"})
+		return
+	}
+
 	fileHeader, err := c.FormFile("images")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -97,9 +119,47 @@ func (t *TaskController) UploadTaskImages(c *gin.Context) {
 		}
 	}(filesInZip)
 
-	for _, file := range filesInZip.File {
-		fmt.Println(file.Name)
+	var wg sync.WaitGroup
+
+	resultChan := make(chan string)
+
+	for i, file := range filesInZip.File {
+		wg.Add(1)
+
+		go func(wg *sync.WaitGroup, resultChan chan<- string, taskId string, file *zip.File) {
+			defer wg.Done()
+
+			err := t.storageService.SaveImage(taskId, file)
+			if err != nil {
+				log.Print(err)
+				return
+			}
+
+			resultChan <- taskId
+
+			return
+		}(&wg, resultChan, fmt.Sprintf(fmt.Sprintf("%s-%d", taskId, i)), file)
 	}
+
+	go func() {
+		wg.Wait()
+		close(resultChan)
+	}()
+
+	newSubtasks := make([]*models.Subtask, 0)
+	for r := range resultChan {
+		newSubtasks = slices.Insert(newSubtasks, len(newSubtasks), &models.Subtask{Id: r})
+	}
+
+	task.Subtasks = newSubtasks
+
+	err = t.taskService.UpdateTask(task)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.Status(http.StatusOK)
 
 	defer func() {
 		err := os.Remove(destination)
