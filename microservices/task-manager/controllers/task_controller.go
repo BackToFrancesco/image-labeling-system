@@ -120,7 +120,6 @@ func (t *TaskController) UploadTaskImages(c *gin.Context) {
 	}(filesInZip)
 
 	var wg sync.WaitGroup
-
 	resultChan := make(chan string)
 
 	for i, file := range filesInZip.File {

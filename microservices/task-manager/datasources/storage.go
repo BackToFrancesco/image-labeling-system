@@ -13,7 +13,7 @@ type Storage struct {
 }
 
 func NewStorage(env *config.Env) *Storage {
-	uri := fmt.Sprintf("localhost:%s", env.MinioPort)
+	uri := fmt.Sprintf("%s:%s", env.MinioHost, env.MinioPort)
 
 	client, err := minio.New(uri, &minio.Options{
 		Creds: credentials.NewStaticV2(env.MinioUsername, env.MinioPassword, ""),

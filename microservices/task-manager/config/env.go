@@ -15,6 +15,7 @@ type Env struct {
 	MinioPort     string `mapstructure:"MINIO_PORT"`
 	MinioUsername string `mapstructure:"MINIO_USER"`
 	MinioPassword string `mapstructure:"MINIO_PASS"`
+	MinioHost     string `mapstructure:"MINIO_HOST"`
 }
 
 // NewEnv creates a new environment

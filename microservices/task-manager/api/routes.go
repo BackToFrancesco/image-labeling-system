@@ -14,7 +14,6 @@ func (t *TaskRoutes) setRoutes() {
 
 	api.POST("/tasks", t.controller.CreateNewTask)
 	api.POST("/tasks/:taskId/upload", t.controller.UploadTaskImages)
-
 }
 
 func NewTaskRoutes(
