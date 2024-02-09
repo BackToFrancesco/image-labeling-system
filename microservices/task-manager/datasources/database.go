@@ -16,8 +16,7 @@ type Database struct {
 }
 
 const (
-	TasksCollection    = "tasks"
-	SubtasksCollection = "subtasks"
+	TasksCollection = "tasks"
 )
 
 func NewDatabase(env *config.Env) *Database {
@@ -39,11 +38,6 @@ func NewDatabase(env *config.Env) *Database {
 	db := client.Database(env.DBName)
 
 	err = db.CreateCollection(ctx, TasksCollection)
-	if err != nil && !errors.As(err, &mongo.CommandError{}) {
-		log.Fatal(err)
-	}
-
-	err = db.CreateCollection(ctx, SubtasksCollection)
 	if err != nil && !errors.As(err, &mongo.CommandError{}) {
 		log.Fatal(err)
 	}

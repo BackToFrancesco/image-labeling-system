@@ -19,18 +19,52 @@ const (
 )
 
 type TaskController struct {
-	taskService    domain.TaskService
-	storageService domain.StorageService
+	taskService          domain.TaskService
+	storageService       domain.StorageService
+	messageBrokerService domain.MessageBrokerService
 }
 
 func NewTaskController(
 	taskService domain.TaskService,
 	storageService domain.StorageService,
+	messageBrokerService domain.MessageBrokerService,
 ) *TaskController {
-	return &TaskController{
-		taskService:    taskService,
-		storageService: storageService,
+	taskController := &TaskController{
+		taskService:          taskService,
+		storageService:       storageService,
+		messageBrokerService: messageBrokerService,
 	}
+
+	go func() {
+		taskController.messageBrokerService.ConsumeCompletedSubtasks(taskController.consumeCompletedTask)
+	}()
+
+	return taskController
+}
+
+func (t *TaskController) consumeCompletedTask(message *models.CompletedSubtaskMessage) error {
+	m := map[string]int{}
+
+	var maxCnt int
+	var mostFreq string
+
+	for _, label := range message.AssignedLabels {
+		m[*label]++
+		if m[*label] > maxCnt {
+			maxCnt = m[*label]
+			mostFreq = *label
+		}
+	}
+
+	err := t.taskService.UpdateSubtask(&models.Subtask{
+		Id:    message.Id,
+		Label: mostFreq,
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (t *TaskController) CreateNewTask(c *gin.Context) {
@@ -156,6 +190,19 @@ func (t *TaskController) UploadTaskImages(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
+	}
+
+	for _, subtask := range task.Subtasks {
+		go func(subtask *models.Subtask) {
+			err := t.messageBrokerService.PublishNewSubtask(&models.SubtaskMessage{
+				Id:     subtask.Id,
+				Labels: task.Labels,
+			})
+			if err != nil {
+				log.Print(err)
+				return
+			}
+		}(subtask)
 	}
 
 	c.Status(http.StatusOK)

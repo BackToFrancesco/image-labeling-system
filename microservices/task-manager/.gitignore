@@ -22,6 +22,7 @@ go.work
 
 # Environment file
 .env
+.docker.env
 
 # Goland IDE
 .idea

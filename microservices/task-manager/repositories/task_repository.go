@@ -7,6 +7,7 @@ import (
 	"fabc.it/task-manager/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"strings"
 )
 
 type TaskRepository struct {
@@ -60,6 +61,28 @@ func (t TaskRepository) UpdateTask(task *models.Task) error {
 
 	filter := bson.D{{"_id", objectId}}
 	update := bson.D{{"$set", bson.D{{"subtasks", task.Subtasks}}}}
+
+	_, err = t.db.Collection(datasources.TasksCollection).UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (t TaskRepository) UpdateSubtask(subtask *models.Subtask) error {
+	taskId := strings.Split(subtask.Id, "-")[0]
+
+	objectId, err := primitive.ObjectIDFromHex(taskId)
+	if err != nil {
+		return err
+	}
+
+	filter := bson.D{
+		{"_id", objectId},
+		{"subtasks", bson.D{{"$elemMatch", bson.D{{"id", subtask.Id}}}}},
+	}
+	update := bson.D{{"$set", bson.D{{"subtasks.$.label", subtask.Label}}}}
 
 	_, err = t.db.Collection(datasources.TasksCollection).UpdateOne(context.Background(), filter, update)
 	if err != nil {
