@@ -1,6 +1,14 @@
 version: '3.1'
 
 services:
+
+  # image-distribution-manager:
+  #   build:
+  #     context: ./image-distribution-manager
+  #     dockerfile: ./Dockerfile
+  #   depends_on:
+  #     - mongo
+      
   task-manager:
     build:
       context: ./task-manager
