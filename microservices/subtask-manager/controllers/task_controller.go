@@ -3,8 +3,7 @@ package controllers
 import (
 	//"archive/zip"
 	"fabc.it/subtask-manager/domain"
-	//"fabc.it/subtask-manager/models"
-	"fmt"
+	"fabc.it/subtask-manager/models"
 
 	"github.com/gin-gonic/gin"
 
@@ -43,43 +42,16 @@ func NewTaskController(
 
 	return taskController
 }
-/*
-func (t *TaskController) consumeCompletedTask(message *models.CompletedSubtaskMessage) error {
-	m := map[string]int{}
 
-	var maxCnt int
-	var mostFreq string
+func (t *TaskController) SendImages(c *gin.Context) {
 
-	for _, label := range message.AssignedLabels {
-		m[*label]++
-		if m[*label] > maxCnt {
-			maxCnt = m[*label]
-			mostFreq = *label
-		}
-	}
-
-	err := t.taskService.UpdateSubtask(&models.Subtask{
-		Id:    message.Id,
-		Label: mostFreq,
-	})
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-*/
-/*
-func (t *TaskController) CreateNewTask(c *gin.Context) {
-	input := &models.Task{}
-
-	err := c.ShouldBindJSON(&input)
-	if err != nil {
+	input := &models.RequestSubtasks{}
+	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = t.taskService.CreateNewTask(input)
+	res, err := t.taskService.GetSubtasks(input.NumberOfSubtasks, input.UserId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -87,24 +59,26 @@ func (t *TaskController) CreateNewTask(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"id": input.Id})
+	c.JSON(http.StatusOK, gin.H{"subtasks": res})
 }
-*/
-func (t *TaskController) SendImages(c *gin.Context) {
-	fmt.Println("Images asked from user")
-	//err := db
-	// take subtask with less labelings
-	// send 100 images to classify
-	// 
-	res, err := t.taskService.GetSubtasks(10, "userID3")
+
+func (t *TaskController) UpdateSubtaskLabels(c *gin.Context) {
+	input := &models.LabelSubtask{}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := t.taskService.UpdateSubtaskLabels(input)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	fmt.Println("Tasks2:", res)
-	c.JSON(http.StatusOK, gin.H{"tasks": res})
+
+	c.Status(http.StatusOK)
 }
 /*
 func (t *TaskController) UploadTaskImages(c *gin.Context) {

@@ -21,39 +21,6 @@ func NewTaskRepository(
 	return &TaskRepository{db: db}
 }
 
-func (t TaskRepository) CreateNewTask(task *models.Task) error {
-	result, err := t.db.Collection(datasources.TasksCollection).InsertOne(context.Background(), task)
-	if err != nil {
-		return err
-	}
-
-	if oid, ok := result.InsertedID.(primitive.ObjectID); ok {
-		task.Id = oid.Hex()
-	}
-
-	return nil
-}
-
-func (t TaskRepository) GetTask(taskId string) (task *models.Task, err error) {
-	objectId, err := primitive.ObjectIDFromHex(taskId)
-	if err != nil {
-		return nil, err
-	}
-
-	result := t.db.Collection(datasources.TasksCollection).FindOne(context.Background(), bson.M{"_id": objectId})
-
-	if result.Err() != nil {
-		return nil, result.Err()
-	}
-
-	err = result.Decode(&task)
-	if err != nil {
-		return nil, err
-	}
-
-	return
-}
-
 func (t TaskRepository) UpdateTask(task *models.Task) error {
 	objectId, err := primitive.ObjectIDFromHex(task.Id)
 	if err != nil {
@@ -70,41 +37,18 @@ func (t TaskRepository) UpdateTask(task *models.Task) error {
 
 	return nil
 }
-/*
-func (t TaskRepository) UpdateSubtask(subtask *models.Subtask) error {
-	taskId := strings.Split(subtask.Id, "-")[0]
 
-	objectId, err := primitive.ObjectIDFromHex(taskId)
-	if err != nil {
-		return err
+func (t TaskRepository) AddUserIDToAssignees(subtasks []models.Subtask, userID string) error {
+	for _, subtask := range subtasks {
+		filter := bson.M{"_id": subtask.Id}
+		update := bson.M{"$addToSet": bson.M{"assignee": userID}} // this will add the userID only if it's not already present
+		_, err := t.db.Collection(datasources.TasksCollection).UpdateOne(context.Background(), filter, update)
+		if err != nil {
+			return err
+		}
 	}
-
-	filter := bson.D{
-		{"_id", objectId},
-		{"subtasks", bson.D{{"$elemMatch", bson.D{{"id", subtask.Id}}}}},
-	}
-	update := bson.D{{"$set", bson.D{{"subtasks.$.label", subtask.Label}}}}
-
-	_, err = t.db.Collection(datasources.TasksCollection).UpdateOne(context.Background(), filter, update)
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
-*/
-func (t TaskRepository) AddUserIDToAssignees(subtasks []models.Subtask, userID string) error {
-    for _, subtask := range subtasks {
-        filter := bson.M{"_id": subtask.Id}
-        update := bson.M{"$addToSet": bson.M{"assignee": userID}} // this will add the userID only if it's not already present
-        _, err := t.db.Collection(datasources.TasksCollection).UpdateOne(context.Background(), filter, update)
-        if err != nil {
-            return err
-        }
-    }
-    return nil
-}
-
 
 func (t TaskRepository) GetSubtasks(numberOfSubtasks int, userId string) (task *[]models.Subtask, err error) {
 	pipeline := mongo.Pipeline{
@@ -142,4 +86,25 @@ func (t TaskRepository) GetSubtasks(numberOfSubtasks int, userId string) (task *
 	t.AddUserIDToAssignees(results, userId)
 
 	return &results, nil
+}
+
+func (t *TaskRepository) UpdateSubtaskLabels(labelSubtask *models.LabelSubtask) (err error) {
+	for _, pair := range labelSubtask.AssignedLabels {
+		// Build the field increment expression for each label
+		field := "assignedLabels." + pair.Label
+		update := bson.M{"$inc": bson.M{field: 1}}
+
+		// Build the filter to find the document with the matching ImageId
+		filter := bson.M{"_id": pair.ImageId}
+
+		// TODO: if label not exist what to do?
+		// TODO: control if the user that is going to assign a label is in assignee?
+		// TODO: handle concurrency?
+		_, err := t.db.Collection(datasources.TasksCollection).UpdateOne(context.Background(), filter, update)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
