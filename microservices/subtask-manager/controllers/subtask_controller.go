@@ -1,46 +1,76 @@
 package controllers
 
 import (
-	//"archive/zip"
 	"fabc.it/subtask-manager/domain"
 	"fabc.it/subtask-manager/models"
-
 	"github.com/gin-gonic/gin"
-
-	//"log"
-	//"mime/multipart"
 	"net/http"
-	//"os"
-	//"slices"
-	//"sync"
 )
 
 const (
-	taskId = "taskId"
+	// Number of labels required to complete a subtask
+	labelsRequired = 10
 )
 
 type SubtaskController struct {
 	subtaskService       domain.SubtaskService
-	storageService       domain.StorageService
-	//messageBrokerService domain.MessageBrokerService
+	//storageService       domain.StorageService
+	messageBrokerService domain.MessageBrokerService
 }
 
-func NewTaskController(
+func NewSubtaskController(
 	subtaskService domain.SubtaskService,
-	storageService domain.StorageService,
-	//messageBrokerService domain.MessageBrokerService,
+	//storageService domain.StorageService,
+	messageBrokerService domain.MessageBrokerService,
 ) *SubtaskController {
-	taskController := &SubtaskController{
+	subtaskController := &SubtaskController{
 		subtaskService:       subtaskService,
-		storageService:       storageService,
-		//messageBrokerService: messageBrokerService,
+		//storageService:       storageService,
+		messageBrokerService: messageBrokerService,
 	}
-	/*
+	
 	go func() {
-		taskController.messageBrokerService.ConsumeCompletedSubtasks(taskController.consumeCompletedTask)
-	}()*/
+		subtaskController.messageBrokerService.ConsumeNewSubtasks(subtaskController.ConsumeNewSubTask)
+	}()
 
-	return taskController
+	return subtaskController
+}
+
+func (t *SubtaskController) ConsumeNewSubTask(message *models.SubtaskMessage) error{
+	
+	// Translation of SubtaskMessage to Subtask
+    assignedLabels := make(map[string]int)
+	
+	for _, labelPtr := range message.Labels {
+        if labelPtr != nil {
+            assignedLabels[*labelPtr] = 0
+        }
+    }
+
+    subtask := models.Subtask {
+        Id:             message.Id,
+        Labels:         message.Labels,
+        Assignee:       []string{},
+        AssignedLabels: assignedLabels,
+    }
+
+	err := t.subtaskService.CreateNewSubtask(&subtask)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (t *SubtaskController) PublishCompletedSubtask(message *models.Subtask) error{
+
+	completedSubtask := models.CompletedSubtaskMessage{
+		Id: message.Id,
+		AssignedLabels: &message.AssignedLabels,
+	}
+	t.messageBrokerService.PublishCompletedSubtask(&completedSubtask)
+
+	return nil
 }
 
 func (t *SubtaskController) GetSubtasks(c *gin.Context) {
@@ -80,140 +110,22 @@ func (t *SubtaskController) UpdateSubtaskLabel(c *gin.Context) {
 
 	// TODO: refactor in a function?
 	// total number of assigned labels
-	total := 0
+	totalLabels := 0
 	for _, count := range res.AssignedLabels {
-		total += count
+		totalLabels += count
 	}
 
-	// TODO: send message to RabbitMq
-	c.JSON(http.StatusOK, gin.H{"newTotal:": total})
-}
-/*
-func (t *TaskController) UploadTaskImages(c *gin.Context) {
-	taskId := c.Param(taskId)
-
-	if taskId == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "no task id specified"})
-		return
-	}
-
-	task, err := t.taskService.GetTask(taskId)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "task not found"})
-		return
-	}
-
-	fileHeader, err := c.FormFile("images")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	file, err := fileHeader.Open()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	defer func(file multipart.File) {
-		err := file.Close()
+	// publish message in RabbitMq
+	if labelsRequired <= totalLabels {
+		err = t.PublishCompletedSubtask(res)
 		if err != nil {
-			log.Print(err)
-		}
-	}(file)
-
-	bytes := make([]byte, 512)
-
-	_, err = file.Read(bytes)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if contentType := http.DetectContentType(bytes); contentType != "application/zip" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Not a zip file"})
-		return
-	}
-
-	destination := fmt.Sprintf("%s", fileHeader.Filename)
-	err = c.SaveUploadedFile(fileHeader, destination)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	filesInZip, err := zip.OpenReader(destination)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	defer func(filesInZip *zip.ReadCloser) {
-		err := filesInZip.Close()
-		if err != nil {
-			log.Print(err)
-		}
-	}(filesInZip)
-
-	var wg sync.WaitGroup
-	resultChan := make(chan string)
-
-	for i, file := range filesInZip.File {
-		wg.Add(1)
-
-		go func(wg *sync.WaitGroup, resultChan chan<- string, taskId string, file *zip.File) {
-			defer wg.Done()
-
-			err := t.storageService.SaveImage(taskId, file)
-			if err != nil {
-				log.Print(err)
-				return
-			}
-
-			resultChan <- taskId
-
-			return
-		}(&wg, resultChan, fmt.Sprintf(fmt.Sprintf("%s-%d", taskId, i)), file)
-	}
-
-	go func() {
-		wg.Wait()
-		close(resultChan)
-	}()
-
-	newSubtasks := make([]*models.Subtask, 0)
-	for r := range resultChan {
-		newSubtasks = slices.Insert(newSubtasks, len(newSubtasks), &models.Subtask{Id: r})
-	}
-
-	task.Subtasks = newSubtasks
-
-	err = t.taskService.UpdateTask(task)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	for _, subtask := range task.Subtasks {
-		go func(subtask *models.Subtask) {
-			err := t.messageBrokerService.PublishNewSubtask(&models.SubtaskMessage{
-				Id:     subtask.Id,
-				Labels: task.Labels,
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
 			})
-			if err != nil {
-				log.Print(err)
-				return
-			}
-		}(subtask)
-	}
-
-	c.Status(http.StatusOK)
-
-	defer func() {
-		err := os.Remove(destination)
-		if err != nil {
 			return
 		}
-	}()
+	}
+	
+
+	c.JSON(http.StatusOK, gin.H{"newTotal:": totalLabels})
 }
-*/

@@ -1,7 +1,7 @@
 version: '3.1'
 
 services:
-      
+  
   task-manager:
     build:
       context: ./task-manager
@@ -13,6 +13,18 @@ services:
     depends_on:
       - mongo
       - minio
+      - rabbitmq
+
+  subtask-manager:
+    build:
+      context: ./subtask-manager
+      dockerfile: ./Dockerfile
+    ports:
+      - "${SERVER_PORT_SUBTASK}:${SERVER_PORT_SUBTASK}"
+    environment:
+      CURRENT_ENV: docker
+    depends_on:
+      - mongo
       - rabbitmq
 
   mongo:

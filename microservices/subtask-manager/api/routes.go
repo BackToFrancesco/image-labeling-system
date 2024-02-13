@@ -16,7 +16,7 @@ func (t *SubtaskRoutes) setRoutes() {
 	api.POST("/update-subtask-label", t.controller.UpdateSubtaskLabel) //TODO: decide a name 
 }
 
-func NewTaskRoutes(
+func NewSubtaskRoutes(
 	handler *RequestHandler,
 	controller *controllers.SubtaskController,
 ) *SubtaskRoutes {

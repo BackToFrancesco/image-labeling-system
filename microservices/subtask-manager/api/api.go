@@ -3,7 +3,7 @@ package api
 import "go.uber.org/fx"
 
 var Constructors = fx.Options(
-	fx.Provide(NewTaskServer),
+	fx.Provide(NewSubtaskServer),
 	fx.Provide(NewRequestHandler),
-	fx.Provide(NewTaskRoutes),
+	fx.Provide(NewSubtaskRoutes),
 )

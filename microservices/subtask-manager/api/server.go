@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-func NewTaskServer(lc fx.Lifecycle, env *config.Env) *gin.Engine {
+func NewSubtaskServer(lc fx.Lifecycle, env *config.Env) *gin.Engine {
 	router := gin.Default()
 
 	server := &http.Server{Addr: fmt.Sprintf(":%s", env.ServerPort), Handler: router}

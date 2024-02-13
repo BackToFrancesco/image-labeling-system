@@ -6,6 +6,6 @@ import (
 
 var Constructors = fx.Options(
 	fx.Provide(NewDatabase),
-	fx.Provide(NewStorage),
+	//fx.Provide(NewStorage),
 	fx.Provide(NewMessageBroker),
 )
