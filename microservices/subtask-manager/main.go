@@ -18,7 +18,7 @@ func main() {
 		controllers.Constructors,
 		api.Constructors,
 		fx.Invoke(func(engine *gin.Engine) {}),
-		fx.Invoke(func(route *api.TaskRoutes) {}),
+		fx.Invoke(func(route *api.SubtaskRoutes) {}),
 	)
 
 	app.Run()

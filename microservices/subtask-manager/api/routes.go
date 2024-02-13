@@ -4,23 +4,23 @@ import (
 	"fabc.it/subtask-manager/controllers"
 )
 
-type TaskRoutes struct {
+type SubtaskRoutes struct {
 	handler    *RequestHandler
-	controller *controllers.TaskController
+	controller *controllers.SubtaskController
 }
 
-func (t *TaskRoutes) setRoutes() {
+func (t *SubtaskRoutes) setRoutes() {
 	api := t.handler.Group("/api")
 
-	api.GET("/ask-images", t.controller.SendImages) //TODO: decide a name
-	api.POST("/update-subtask-labels", t.controller.UpdateSubtaskLabels) //TODO: decide a name 
+	api.GET("/ask-images", t.controller.GetSubtasks) //TODO: decide a name
+	api.POST("/update-subtask-label", t.controller.UpdateSubtaskLabel) //TODO: decide a name 
 }
 
 func NewTaskRoutes(
 	handler *RequestHandler,
-	controller *controllers.TaskController,
-) *TaskRoutes {
-	routes := &TaskRoutes{
+	controller *controllers.SubtaskController,
+) *SubtaskRoutes {
+	routes := &SubtaskRoutes{
 		handler:    handler,
 		controller: controller,
 	}

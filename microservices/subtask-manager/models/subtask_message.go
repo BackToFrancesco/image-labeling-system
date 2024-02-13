@@ -1,6 +1,6 @@
 package models
 
 type SubtaskMessage struct {
-	Id     string    `json:"id"`
-	Labels []*string `json:"labels"`
+	Id     string    `json:"id" bson:"_id,omitempty"`
+	Labels []*string `json:"labels" bson:"labels"`
 }

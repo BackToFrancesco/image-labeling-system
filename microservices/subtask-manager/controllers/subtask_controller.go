@@ -19,19 +19,19 @@ const (
 	taskId = "taskId"
 )
 
-type TaskController struct {
-	taskService          domain.TaskService
+type SubtaskController struct {
+	subtaskService       domain.SubtaskService
 	storageService       domain.StorageService
 	//messageBrokerService domain.MessageBrokerService
 }
 
 func NewTaskController(
-	taskService domain.TaskService,
+	subtaskService domain.SubtaskService,
 	storageService domain.StorageService,
 	//messageBrokerService domain.MessageBrokerService,
-) *TaskController {
-	taskController := &TaskController{
-		taskService:          taskService,
+) *SubtaskController {
+	taskController := &SubtaskController{
+		subtaskService:       subtaskService,
 		storageService:       storageService,
 		//messageBrokerService: messageBrokerService,
 	}
@@ -43,7 +43,7 @@ func NewTaskController(
 	return taskController
 }
 
-func (t *TaskController) SendImages(c *gin.Context) {
+func (t *SubtaskController) GetSubtasks(c *gin.Context) {
 
 	input := &models.RequestSubtasks{}
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -51,7 +51,7 @@ func (t *TaskController) SendImages(c *gin.Context) {
 		return
 	}
 
-	res, err := t.taskService.GetSubtasks(input.NumberOfSubtasks, input.UserId)
+	res, err := t.subtaskService.GetSubtasks(input.NumberOfSubtasks, input.UserId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -62,7 +62,7 @@ func (t *TaskController) SendImages(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"subtasks": res})
 }
 
-func (t *TaskController) UpdateSubtaskLabels(c *gin.Context) {
+func (t *SubtaskController) UpdateSubtaskLabel(c *gin.Context) {
 	input := &models.LabelSubtask{}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -70,7 +70,7 @@ func (t *TaskController) UpdateSubtaskLabels(c *gin.Context) {
 		return
 	}
 
-	err := t.taskService.UpdateSubtaskLabels(input)
+	res, err := t.subtaskService.UpdateSubtaskLabel(input)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -78,7 +78,15 @@ func (t *TaskController) UpdateSubtaskLabels(c *gin.Context) {
 		return
 	}
 
-	c.Status(http.StatusOK)
+	// TODO: refactor in a function?
+	// total number of assigned labels
+	total := 0
+	for _, count := range res.AssignedLabels {
+		total += count
+	}
+
+	// TODO: send message to RabbitMq
+	c.JSON(http.StatusOK, gin.H{"newTotal:": total})
 }
 /*
 func (t *TaskController) UploadTaskImages(c *gin.Context) {

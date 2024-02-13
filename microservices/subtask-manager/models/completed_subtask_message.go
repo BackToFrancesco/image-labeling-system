@@ -2,5 +2,5 @@ package models
 
 type CompletedSubtaskMessage struct {
 	Id             string    `json:"id"`
-	AssignedLabels []*string `json:"assignedLabels"`
+	AssignedLabels map[string]int `json:"assignedLabels"`
 }

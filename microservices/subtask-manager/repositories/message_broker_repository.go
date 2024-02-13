@@ -19,7 +19,8 @@ func NewMessageBrokerRepository(broker *datasources.MessageBroker) domain.Messag
 	return &MessageBrokerRepository{broker: broker}
 }
 
-func (m MessageBrokerRepository) PublishNewSubtask(subtask *models.SubtaskMessage) error {
+func (m MessageBrokerRepository) PublishNewSubtask(subtask *models.SubtaskMessage) error { // ritorno completedsubtask
+	// PublishCompletedSubtask: invio messaggio con subtask completata
 	var b bytes.Buffer
 	encoder := json.NewEncoder(&b)
 
@@ -30,7 +31,7 @@ func (m MessageBrokerRepository) PublishNewSubtask(subtask *models.SubtaskMessag
 
 	err = m.broker.Channel.PublishWithContext(context.Background(),
 		"",
-		datasources.NewSubtasksQueue,
+		datasources.NewSubtasksQueue, // PublishCompletedSubtask
 		false,
 		false,
 		amqp.Publishing{
@@ -46,8 +47,9 @@ func (m MessageBrokerRepository) PublishNewSubtask(subtask *models.SubtaskMessag
 	return nil
 }
 
-func (m MessageBrokerRepository) ConsumeCompletedSubtasks(consume func(message *models.CompletedSubtaskMessage) error) {
-	messages, err := m.broker.Channel.Consume(datasources.CompletedSubtasksQueue,
+func (m MessageBrokerRepository) ConsumeCompletedSubtasks(consume func(message *models.CompletedSubtaskMessage) error) { //passo subtask message
+	// Consume New Subtask = creo nuova sub
+	messages, err := m.broker.Channel.Consume(datasources.CompletedSubtasksQueue, // NewSubTask
 		"",
 		true,
 		false,
