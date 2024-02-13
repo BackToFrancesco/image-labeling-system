@@ -12,8 +12,10 @@ const (
 	labelsRequired = 10
 )
 
+const subtaskId = "subtaskId"
+
 type SubtaskController struct {
-	subtaskService       domain.SubtaskService
+	subtaskService domain.SubtaskService
 	//storageService       domain.StorageService
 	messageBrokerService domain.MessageBrokerService
 }
@@ -24,11 +26,11 @@ func NewSubtaskController(
 	messageBrokerService domain.MessageBrokerService,
 ) *SubtaskController {
 	subtaskController := &SubtaskController{
-		subtaskService:       subtaskService,
+		subtaskService: subtaskService,
 		//storageService:       storageService,
 		messageBrokerService: messageBrokerService,
 	}
-	
+
 	go func() {
 		subtaskController.messageBrokerService.ConsumeNewSubtasks(subtaskController.ConsumeNewSubTask)
 	}()
@@ -36,23 +38,23 @@ func NewSubtaskController(
 	return subtaskController
 }
 
-func (t *SubtaskController) ConsumeNewSubTask(message *models.SubtaskMessage) error{
-	
-	// Translation of SubtaskMessage to Subtask
-    assignedLabels := make(map[string]int)
-	
-	for _, labelPtr := range message.Labels {
-        if labelPtr != nil {
-            assignedLabels[*labelPtr] = 0
-        }
-    }
+func (t *SubtaskController) ConsumeNewSubTask(message *models.SubtaskMessage) error {
 
-    subtask := models.Subtask {
-        Id:             message.Id,
-        Labels:         message.Labels,
-        Assignee:       []string{},
-        AssignedLabels: assignedLabels,
-    }
+	// Translation of SubtaskMessage to Subtask
+	assignedLabels := make(map[string]int)
+
+	for _, labelPtr := range message.Labels {
+		if labelPtr != nil {
+			assignedLabels[*labelPtr] = 0
+		}
+	}
+
+	subtask := models.Subtask{
+		Id:             message.Id,
+		Labels:         message.Labels,
+		Assignee:       []string{},
+		AssignedLabels: assignedLabels,
+	}
 
 	err := t.subtaskService.CreateNewSubtask(&subtask)
 	if err != nil {
@@ -62,13 +64,17 @@ func (t *SubtaskController) ConsumeNewSubTask(message *models.SubtaskMessage) er
 	return nil
 }
 
-func (t *SubtaskController) PublishCompletedSubtask(message *models.Subtask) error{
+func (t *SubtaskController) PublishCompletedSubtask(message *models.Subtask) error {
 
 	completedSubtask := models.CompletedSubtaskMessage{
-		Id: message.Id,
+		Id:             message.Id,
 		AssignedLabels: &message.AssignedLabels,
 	}
-	t.messageBrokerService.PublishCompletedSubtask(&completedSubtask)
+
+	err := t.messageBrokerService.PublishCompletedSubtask(&completedSubtask)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -100,6 +106,8 @@ func (t *SubtaskController) UpdateSubtaskLabel(c *gin.Context) {
 		return
 	}
 
+	input.ImageId = c.Param(subtaskId)
+
 	res, err := t.subtaskService.UpdateSubtaskLabel(input)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -125,7 +133,6 @@ func (t *SubtaskController) UpdateSubtaskLabel(c *gin.Context) {
 			return
 		}
 	}
-	
 
 	c.JSON(http.StatusOK, gin.H{"newTotal:": totalLabels})
 }

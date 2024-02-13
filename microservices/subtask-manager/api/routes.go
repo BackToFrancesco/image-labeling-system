@@ -12,8 +12,8 @@ type SubtaskRoutes struct {
 func (t *SubtaskRoutes) setRoutes() {
 	api := t.handler.Group("/api")
 
-	api.GET("/ask-images", t.controller.GetSubtasks) //TODO: decide a name
-	api.POST("/update-subtask-label", t.controller.UpdateSubtaskLabel) //TODO: decide a name 
+	api.GET("/subtasks", t.controller.GetSubtasks)
+	api.PATCH("/subtasks/:subtaskId", t.controller.UpdateSubtaskLabel)
 }
 
 func NewSubtaskRoutes(

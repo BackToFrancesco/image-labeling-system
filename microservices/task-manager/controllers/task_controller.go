@@ -43,16 +43,13 @@ func NewTaskController(
 }
 
 func (t *TaskController) consumeCompletedTask(message *models.CompletedSubtaskMessage) error {
-	m := map[string]int{}
+	maxCnt := -1
+	mostFreq := ""
 
-	var maxCnt int
-	var mostFreq string
-
-	for _, label := range message.AssignedLabels {
-		m[*label]++
-		if m[*label] > maxCnt {
-			maxCnt = m[*label]
-			mostFreq = *label
+	for key, value := range message.AssignedLabels {
+		if value > maxCnt {
+			maxCnt = value
+			mostFreq = key
 		}
 	}
 

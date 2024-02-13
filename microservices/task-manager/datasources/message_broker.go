@@ -5,6 +5,8 @@ import (
 	"fmt"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"log"
+	"net"
+	"time"
 )
 
 const (
@@ -19,7 +21,12 @@ type MessageBroker struct {
 func NewMessageBroker(env *config.Env) *MessageBroker {
 	uri := fmt.Sprintf("amqp://%s:%s@%s:%s", env.RabbitMQUsername, env.RabbitMQPassword, env.RabbitMQHost, env.RabbitMQPort)
 
-	conn, err := amqp.Dial(uri)
+	conn, err := amqp.DialConfig(uri, amqp.Config{
+		Dial: func(network, addr string) (net.Conn, error) {
+			return net.DialTimeout(network, addr, 10*time.Second)
+		},
+	})
+
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -25,6 +25,7 @@ services:
       CURRENT_ENV: docker
     depends_on:
       - mongo
+      - minio
       - rabbitmq
 
   mongo:
