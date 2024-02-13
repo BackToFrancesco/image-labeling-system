@@ -5,7 +5,6 @@ import (
 	"fmt"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"log"
-	"net"
 	"time"
 )
 
@@ -21,11 +20,20 @@ type MessageBroker struct {
 func NewMessageBroker(env *config.Env) *MessageBroker {
 	uri := fmt.Sprintf("amqp://%s:%s@%s:%s", env.RabbitMQUsername, env.RabbitMQPassword, env.RabbitMQHost, env.RabbitMQPort)
 
-	conn, err := amqp.DialConfig(uri, amqp.Config{
-		Dial: func(network, addr string) (net.Conn, error) {
-			return net.DialTimeout(network, addr, 10*time.Second)
-		},
-	})
+	var conn *amqp.Connection
+	var err error
+
+	for i := 0; i < 5; i++ { // Retry up to 5 times
+		conn, err = amqp.Dial(uri)
+		if err == nil {
+			break // Successfully connected
+		}
+		time.Sleep(time.Second * 5) // Wait for 5 seconds before retrying
+	}
+
+	if err != nil {
+		log.Fatalf("Failed to connect to RabbitMQ after retries: %v", err)
+	}
 
 	channel, err := conn.Channel()
 	if err != nil {
