@@ -6,6 +6,7 @@ services:
     build:
       context: ./task-manager
       dockerfile: ./Dockerfile
+    restart: on-failure
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
     environment:
@@ -19,6 +20,7 @@ services:
     build:
       context: ./subtask-manager
       dockerfile: ./Dockerfile
+    restart: on-failure
     ports:
       - "${SERVER_PORT_SUBTASK}:${SERVER_PORT_SUBTASK}"
     environment:
