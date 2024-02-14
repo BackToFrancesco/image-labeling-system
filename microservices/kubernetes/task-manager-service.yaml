@@ -6,16 +6,12 @@ metadata:
       --out ./kompose/
     kompose.version: 1.21.0 (992df58d8)
   labels:
-    io.kompose.service: minio
-  name: minio
+    io.kompose.service: task-manager
+  name: task-manager
 spec:
-  type: NodePort # TODO too many exposed ports
   ports:
-  - name: "9000"
-    port: 9000
-    targetPort: 9000
-  - name: "9001"
-    port: 9001
-    targetPort: 9001
+  - name: "5000"
+    port: 5000
+    targetPort: 5000
   selector:
-    io.kompose.service: minio
+    io.kompose.service: task-manager

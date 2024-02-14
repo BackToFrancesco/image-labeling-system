@@ -1,0 +1,44 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: endpoints
+spec:
+  ingressClassName: kong
+  rules:
+    - http:
+        paths:
+          - path: /api/tasks
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: task-manager
+                port:
+                  number: 5000
+          - path: /api/tasks/*/upload
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: task-manager
+                port:
+                  number: 5000
+          - path: /api/subtasks
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: subtask-manager
+                port:
+                  number: 5001
+          - path: /api/subtasks/*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: subtask-manager
+                port:
+                  number: 5001
+          - path: /images/*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: minio-private
+                port:
+                  number: 9000

@@ -116,7 +116,6 @@ func (t *SubtaskController) UpdateSubtaskLabel(c *gin.Context) {
 		return
 	}
 
-	// TODO: refactor in a function?
 	// total number of assigned labels
 	totalLabels := 0
 	for _, count := range res.AssignedLabels {

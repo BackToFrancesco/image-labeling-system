@@ -86,7 +86,6 @@ func (t *TaskRepository) UpdateSubtaskLabel(labelSubtask *models.LabelSubtask) (
 
 	res := t.db.Collection(datasources.TasksCollection).FindOneAndUpdate(context.Background(), filter, update, opts)
 	if res.Err() != nil {
-		// TODO: if label not present what should I return? (for now "error": "mongo: no documents in result")
 		return nil, res.Err()
 	}
 

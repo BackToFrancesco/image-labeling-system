@@ -5,15 +5,14 @@ metadata:
     kompose.cmd: /snap/kompose/19/kompose-linux-amd64 convert -f docker-compose-plain.yml
       --out ./kompose/
     kompose.version: 1.21.0 (992df58d8)
-  creationTimestamp: null
   labels:
-    io.kompose.service: mongo
-  name: mongo
+    io.kompose.service: minio
+  name: minio
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: mongo
+      io.kompose.service: minio
   strategy:
     type: Recreate
   template:
@@ -22,29 +21,30 @@ spec:
         kompose.cmd: /snap/kompose/19/kompose-linux-amd64 convert -f docker-compose-plain.yml
           --out ./kompose/
         kompose.version: 1.21.0 (992df58d8)
-      creationTimestamp: null
       labels:
-        io.kompose.service: mongo
+        io.kompose.service: minio
     spec:
       containers:
       - env:
-        - name: MONGO_INITDB_ROOT_PASSWORD
+        - name: MINIO_DEFAULT_BUCKETS
+          value: images
+        - name: MINIO_ROOT_PASSWORD
+          value: root-root
+        - name: MINIO_ROOT_USER
           value: root
-        - name: MONGO_INITDB_ROOT_USERNAME
-          value: root
-        image: mongo
+        image: bitnami/minio
         imagePullPolicy: ""
-        name: mongo
+        name: minio
         ports:
-        - containerPort: 27017
+        - containerPort: 9000
+        - containerPort: 9001
         resources: {}
         volumeMounts:
-        - mountPath: /data/db
-          name: mongodbdata
+        - mountPath: /data
+          name: miniodata
       restartPolicy: Always
       serviceAccountName: ""
       volumes:
-      - name: mongodbdata
+      - name: miniodata
         persistentVolumeClaim:
-          claimName: mongodbdata
-status: {}
+          claimName: miniodata
