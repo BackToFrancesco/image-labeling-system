@@ -1,0 +1,161 @@
+{
+	"info": {
+		"_postman_id": "1c5b2dde-e7dc-4780-8644-8638954fbae5",
+		"name": "Image Labeling",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "23583241"
+	},
+	"item": [
+		{
+			"name": "task-manager",
+			"item": [
+				{
+					"name": "Create new task",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Classificazione tavoli\",\n    \"labels\": [\n        \"a\", \"b\", \"c\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{taskBaseUrl}}/api/tasks"
+					},
+					"response": []
+				},
+				{
+					"name": "Upload images for newly created tasks",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/home/alessandro/Downloads/few-images.zip"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{taskBaseUrl}}/api/tasks/:taskId/upload",
+							"host": [
+								"{{taskBaseUrl}}"
+							],
+							"path": [
+								"api",
+								"tasks",
+								":taskId",
+								"upload"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": "65cd2af8c9b0686acb641dee"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "subtask-manager",
+			"item": [
+				{
+					"name": "Classify subtask",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"alecava41\",\n    \"assignedLabel\": \"a\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{subtaskBaseUrl}}/api/subtasks/:subtaskId",
+							"host": [
+								"{{subtaskBaseUrl}}"
+							],
+							"path": [
+								"api",
+								"subtasks",
+								":subtaskId"
+							],
+							"variable": [
+								{
+									"key": "subtaskId",
+									"value": "65cd2af8c9b0686acb641dee-2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get subtasks",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"userId\",\n    \"numberOfSubtasks\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{subtaskBaseUrl}}/api/subtasks"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "taskBaseUrl",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "subtaskBaseUrl",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

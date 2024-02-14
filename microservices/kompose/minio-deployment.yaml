@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: /snap/kompose/19/kompose-linux-amd64 convert -f docker-compose-plain.yml
+      --out ./kompose/
+    kompose.version: 1.21.0 (992df58d8)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: minio
+  name: minio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: minio
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: /snap/kompose/19/kompose-linux-amd64 convert -f docker-compose-plain.yml
+          --out ./kompose/
+        kompose.version: 1.21.0 (992df58d8)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: minio
+    spec:
+      containers:
+      - env:
+        - name: MINIO_DEFAULT_BUCKETS
+          value: images
+        - name: MINIO_ROOT_PASSWORD
+          value: root-root
+        - name: MINIO_ROOT_USER
+          value: root
+        image: bitnami/minio
+        imagePullPolicy: ""
+        name: minio
+        ports:
+        - containerPort: 9000
+        - containerPort: 9001
+        resources: {}
+        volumeMounts:
+        - mountPath: /data
+          name: miniodata
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+      - name: miniodata
+        persistentVolumeClaim:
+          claimName: miniodata
+status: {}
