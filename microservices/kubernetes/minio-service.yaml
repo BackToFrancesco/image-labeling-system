@@ -7,7 +7,7 @@ metadata:
     kompose.version: 1.21.0 (992df58d8)
   labels:
     io.kompose.service: minio
-  name: minio
+  name: minio-public
 spec:
   type: NodePort
   ports:

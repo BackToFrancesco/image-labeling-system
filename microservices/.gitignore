@@ -1,2 +1,4 @@
 .env
 .idea/
+docker-compose-resolved.yaml
+kubernetes/kong-gateway-setup.yaml
