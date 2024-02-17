@@ -35,10 +35,3 @@ spec:
                 name: subtask-manager
                 port:
                   number: 5001
-          - path: /images/*
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: minio-private
-                port:
-                  number: 9000
