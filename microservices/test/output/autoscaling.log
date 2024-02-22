@@ -1,0 +1,205 @@
+Elapsed Time: 0 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   5%/80%    1         10        1          46h
+task-manager-hpa      Deployment/task-manager      5%/80%    1         10        1          46h
+----------------------------------------
+Elapsed Time: 10 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   5%/80%    1         10        1          46h
+task-manager-hpa      Deployment/task-manager      5%/80%    1         10        1          46h
+----------------------------------------
+Elapsed Time: 21 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   5%/80%    1         10        1          46h
+task-manager-hpa      Deployment/task-manager      10%/80%   1         10        1          46h
+----------------------------------------
+Elapsed Time: 31 seconds
+NAME                  REFERENCE                    TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   50%/80%    1         10        1          47h
+task-manager-hpa      Deployment/task-manager      115%/80%   1         10        1          47h
+----------------------------------------
+Elapsed Time: 42 seconds
+NAME                  REFERENCE                    TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   50%/80%    1         10        1          47h
+task-manager-hpa      Deployment/task-manager      115%/80%   1         10        1          47h
+----------------------------------------
+Elapsed Time: 52 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   60%/80%   1         10        1          47h
+task-manager-hpa      Deployment/task-manager      70%/80%   1         10        2          47h
+----------------------------------------
+Elapsed Time: 62 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   75%/80%   1         10        1          47h
+task-manager-hpa      Deployment/task-manager      62%/80%   1         10        2          47h
+----------------------------------------
+Elapsed Time: 72 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   75%/80%   1         10        1          47h
+task-manager-hpa      Deployment/task-manager      55%/80%   1         10        2          47h
+----------------------------------------
+Elapsed Time: 83 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   75%/80%   1         10        1          47h
+task-manager-hpa      Deployment/task-manager      55%/80%   1         10        2          47h
+----------------------------------------
+Elapsed Time: 93 seconds
+NAME                  REFERENCE                    TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   100%/80%   1         10        1          47h
+task-manager-hpa      Deployment/task-manager      72%/80%    1         10        2          47h
+----------------------------------------
+Elapsed Time: 103 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   80%/80%   1         10        2          47h
+task-manager-hpa      Deployment/task-manager      70%/80%   1         10        2          47h
+----------------------------------------
+Elapsed Time: 114 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   80%/80%   1         10        2          47h
+task-manager-hpa      Deployment/task-manager      70%/80%   1         10        2          47h
+----------------------------------------
+Elapsed Time: 124 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   70%/80%   1         10        2          47h
+task-manager-hpa      Deployment/task-manager      82%/80%   1         10        2          47h
+----------------------------------------
+Elapsed Time: 134 seconds
+NAME                  REFERENCE                    TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   67%/80%    1         10        2          47h
+task-manager-hpa      Deployment/task-manager      105%/80%   1         10        2          47h
+----------------------------------------
+Elapsed Time: 145 seconds
+NAME                  REFERENCE                    TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   67%/80%    1         10        2          47h
+task-manager-hpa      Deployment/task-manager      105%/80%   1         10        2          47h
+----------------------------------------
+Elapsed Time: 155 seconds
+NAME                  REFERENCE                    TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   90%/80%    1         10        2          47h
+task-manager-hpa      Deployment/task-manager      130%/80%   1         10        3          47h
+----------------------------------------
+Elapsed Time: 165 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   87%/80%   1         10        3          47h
+task-manager-hpa      Deployment/task-manager      88%/80%   1         10        3          47h
+----------------------------------------
+Elapsed Time: 175 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   87%/80%   1         10        3          47h
+task-manager-hpa      Deployment/task-manager      88%/80%   1         10        3          47h
+----------------------------------------
+Elapsed Time: 186 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   66%/80%   1         10        3          47h
+task-manager-hpa      Deployment/task-manager      90%/80%   1         10        4          47h
+----------------------------------------
+Elapsed Time: 196 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   60%/80%   1         10        3          47h
+task-manager-hpa      Deployment/task-manager      58%/80%   1         10        4          47h
+----------------------------------------
+Elapsed Time: 206 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   60%/80%   1         10        3          47h
+task-manager-hpa      Deployment/task-manager      58%/80%   1         10        4          47h
+----------------------------------------
+Elapsed Time: 217 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   48%/80%   1         10        3          47h
+task-manager-hpa      Deployment/task-manager      45%/80%   1         10        4          47h
+----------------------------------------
+Elapsed Time: 228 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   43%/80%   1         10        3          47h
+task-manager-hpa      Deployment/task-manager      47%/80%   1         10        4          47h
+----------------------------------------
+Elapsed Time: 238 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   40%/80%   1         10        3          47h
+task-manager-hpa      Deployment/task-manager      38%/80%   1         10        4          47h
+----------------------------------------
+Elapsed Time: 248 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   40%/80%   1         10        3          47h
+task-manager-hpa      Deployment/task-manager      38%/80%   1         10        4          47h
+----------------------------------------
+Elapsed Time: 259 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   33%/80%   1         10        3          47h
+task-manager-hpa      Deployment/task-manager      28%/80%   1         10        4          47h
+----------------------------------------
+Elapsed Time: 269 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   23%/80%   1         10        3          47h
+task-manager-hpa      Deployment/task-manager      30%/80%   1         10        4          47h
+----------------------------------------
+Elapsed Time: 279 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   23%/80%   1         10        3          47h
+task-manager-hpa      Deployment/task-manager      30%/80%   1         10        4          47h
+----------------------------------------
+Elapsed Time: 289 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   25%/80%   1         10        3          47h
+task-manager-hpa      Deployment/task-manager      23%/80%   1         10        4          47h
+----------------------------------------
+Elapsed Time: 300 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   31%/80%   1         10        3          47h
+task-manager-hpa      Deployment/task-manager      35%/80%   1         10        4          47h
+----------------------------------------
+Elapsed Time: 310 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   31%/80%   1         10        3          47h
+task-manager-hpa      Deployment/task-manager      35%/80%   1         10        4          47h
+----------------------------------------
+Elapsed Time: 320 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   16%/80%   1         10        3          47h
+task-manager-hpa      Deployment/task-manager      12%/80%   1         10        4          47h
+----------------------------------------
+Elapsed Time: 331 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   11%/80%   1         10        3          47h
+task-manager-hpa      Deployment/task-manager      5%/80%    1         10        4          47h
+----------------------------------------
+Elapsed Time: 341 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   11%/80%   1         10        3          47h
+task-manager-hpa      Deployment/task-manager      5%/80%    1         10        4          47h
+----------------------------------------
+Elapsed Time: 351 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   5%/80%    1         10        3          47h
+task-manager-hpa      Deployment/task-manager      5%/80%    1         10        4          47h
+----------------------------------------
+Elapsed Time: 361 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   5%/80%    1         10        3          47h
+task-manager-hpa      Deployment/task-manager      5%/80%    1         10        4          47h
+----------------------------------------
+Elapsed Time: 371 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   5%/80%    1         10        3          47h
+task-manager-hpa      Deployment/task-manager      5%/80%    1         10        4          47h
+----------------------------------------
+Elapsed Time: 381 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   5%/80%    1         10        2          47h
+task-manager-hpa      Deployment/task-manager      5%/80%    1         10        3          47h
+----------------------------------------
+Elapsed Time: 391 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   5%/80%    1         10        2          47h
+task-manager-hpa      Deployment/task-manager      5%/80%    1         10        3          47h
+----------------------------------------
+Elapsed Time: 401 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   5%/80%    1         10        2          47h
+task-manager-hpa      Deployment/task-manager      5%/80%    1         10        2          47h
+----------------------------------------
+Elapsed Time: 411 seconds
+NAME                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+subtask-manager-hpa   Deployment/subtask-manager   5%/80%    1         10        2          47h
+task-manager-hpa      Deployment/task-manager      5%/80%    1         10        2          47h
+----------------------------------------
