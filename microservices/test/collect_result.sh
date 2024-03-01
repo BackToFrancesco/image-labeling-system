@@ -29,7 +29,7 @@ while true; do
 
     {
         echo "Elapsed Time: $elapsed_time"
-        resources_output=$(kubectl top pods | grep -E '^(subtask|task)')
+        resources_output=$(kubectl top pods | grep -E '^(NAME|subtask|task)')
         echo "$resources_output"
         echo "----------------------------------------"
     } >> "$resources"

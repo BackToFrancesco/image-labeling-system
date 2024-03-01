@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -16,7 +17,7 @@ type CreationResponse struct {
 	Id string `json:"id"`
 }
 
-const testDuration = time.Minute * 5
+const testDuration = time.Minute * 10
 
 func main() {
 	startTime := time.Now()
@@ -32,17 +33,17 @@ func main() {
 		wg.Add(1)
 		/*
 			TEST PATTERN
-			change behaviour every 30 seconds
-			- 0/30 		=> 6 sec
-			- 30/60 	=> 5 sec
-			- 60/90 	=> 4 sec
-			- 90/120	=> 3 sec
-			- 120/150	=> 2 sec
-			- 150/180	=> 2 sec
-			- 180/210	=> 3 sec
-			- 210/240	=> 4 sec
-			- 240/270	=> 6 sec
-			- 270/300	=> 6 sec
+			change behaviour every minute
+			- 0/1 	=> 6 sec
+			- 1/2 	=> 5 sec
+			- 2/3 	=> 4 sec
+			- 3/4	=> 3 sec
+			- 4/5	=> 2 sec
+			- 5/6	=> 2 sec
+			- 6/7	=> 3 sec
+			- 7/8	=> 4 sec
+			- 8/9	=> 6 sec
+			- 9/10	=> 6 sec
 		*/
 
 		pauses := []int{6, 5, 4, 3, 2, 2, 3, 4, 6, 6}
@@ -50,11 +51,12 @@ func main() {
 		for startTime.Add(testDuration).After(time.Now()) {
 			elapsedSeconds := int(time.Now().Sub(startTime).Seconds())
 
-			if elapsedSeconds > 300 {
-				elapsedSeconds = 299
+			if elapsedSeconds > 10*60 {
+				elapsedSeconds = 10*60 - 1
 			}
 
-			pause = time.Duration(pauses[elapsedSeconds/30]) * time.Second
+			pause = time.Duration(pauses[elapsedSeconds/60]) * time.Second
+			time.Sleep(time.Second * 5)
 		}
 
 		wg.Done()
@@ -64,6 +66,18 @@ func main() {
 		wg.Add(1)
 		g := g
 		go func() {
+			f, err := os.OpenFile(fmt.Sprintf("/tmp/client-%d.log", g), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			defer func(f *os.File) {
+				err := f.Close()
+				if err != nil {
+					log.Println(err)
+				}
+			}(f)
+
 			i := 1
 
 			for startTime.Add(testDuration).After(time.Now()) {
@@ -79,6 +93,8 @@ func main() {
 					fmt.Println("Error encoding JSON:", err)
 					continue
 				}
+
+				t := time.Now()
 
 				resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonValue))
 				if err != nil {
@@ -151,6 +167,11 @@ func main() {
 				}
 
 				err = resp.Body.Close()
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				_, err = f.WriteString(fmt.Sprintf("%f,%f\n", time.Now().Sub(t).Seconds(), time.Now().Sub(startTime).Seconds()))
 				if err != nil {
 					fmt.Println(err)
 				}
