@@ -15,6 +15,9 @@ The scope of this project includes:
 
 The Image Labeling System is designed around two core components: the Task Manager and the Subtask Manager, each playing a pivotal role in managing the workflow of tagging images with labels for training machine learning models.
 
+![system](https://github.com/alecava41/image-labeling-system/assets/76614857/3e21e758-4989-4157-afe5-754f177a7e5a)
+
+
 ### Task Manager
 
 The task manager is responsible for overseeing the submission of a group of images to be tagged. Additionally, it is tasked with assigning a label to a specific subtask upon its completion.
