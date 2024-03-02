@@ -11,6 +11,8 @@ The scope of this project includes:
 - Developing a system capable of efficient orchestration and communication among microservices.
 - Ensuring the system's scalability to handle dynamic workloads.
 
+More details on the [Techincal Report](technical_report_rcd.pdf)
+
 # System Overview
 
 The Image Labeling System is designed around two core components: the Task Manager and the Subtask Manager, each playing a pivotal role in managing the workflow of tagging images with labels for training machine learning models.
